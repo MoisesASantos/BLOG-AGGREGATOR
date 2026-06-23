@@ -38,10 +38,11 @@ func write(data *Config) error {
 	return os.WriteFile(path, jsonData, 0644)
 }
 
-func (data *Config) SetUser(user_name string) {
+func (data *Config) SetUser(user_name string) error {
 
 	data.Current_user_name = user_name
-	write(data)
+	err := write(data)
+	return err
 }
 
 func Read() Config {

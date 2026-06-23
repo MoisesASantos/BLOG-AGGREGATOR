@@ -6,6 +6,8 @@ import (
 	"github.com/MoisesASantos/BLOG-AGGREGATOR/internal/config"
 )
 
+
+
 func main() {
 
 	cfg := config.Read()

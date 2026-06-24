@@ -1,11 +1,12 @@
 package main
 
+import _ "github.com/lib/pq"
 import (
 	"fmt"
 	"os"
-
 	"github.com/MoisesASantos/BLOG-AGGREGATOR/internal/commands"
 	"github.com/MoisesASantos/BLOG-AGGREGATOR/internal/config"
+	"github.com/MoisesASantos/BLOG-AGGREGATOR/internal/database"
 )
 
 func main() {
@@ -14,6 +15,13 @@ func main() {
 	state := &commands.State{
 		Data: &cfg,
 	}
+
+	db, err := sql.Open("postgres", cfg.DB_url)
+	if err != nil {
+		fmt.Println("Problem to connect with database")
+		os.Exit(1)
+	}
+	cfg.Db = database.New(db) //create a new query
 
 	cmds := &commands.Commands{
 		CommandMap: make(map[string]func(*commands.State, commands.Command) error),

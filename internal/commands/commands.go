@@ -7,6 +7,7 @@ import (
 )
 
 type State struct {
+	Db  *database.Queries
 	Data *config.Config
 }
 

@@ -4,6 +4,7 @@ import (
 	"errors"
 
 	"github.com/MoisesASantos/BLOG-AGGREGATOR/internal/config"
+	"github.com/MoisesASantos/BLOG-AGGREGATOR/internal/database"
 )
 
 type State struct {

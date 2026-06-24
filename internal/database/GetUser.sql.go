@@ -8,6 +8,8 @@ package database
 import (
 	"context"
 	"time"
+
+	"github.com/google/uuid"
 )
 
 const getUser = `-- name: GetUser :one
@@ -17,7 +19,7 @@ WHERE name = $1
 `
 
 type GetUserRow struct {
-	ID        int32
+	ID        uuid.UUID
 	Name      string
 	CreatedAt time.Time
 }

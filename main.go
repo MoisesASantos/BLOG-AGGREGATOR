@@ -4,6 +4,7 @@ import _ "github.com/lib/pq"
 import (
 	"fmt"
 	"os"
+	"database/sql"
 	"github.com/MoisesASantos/BLOG-AGGREGATOR/internal/commands"
 	"github.com/MoisesASantos/BLOG-AGGREGATOR/internal/config"
 	"github.com/MoisesASantos/BLOG-AGGREGATOR/internal/database"
@@ -16,18 +17,19 @@ func main() {
 		Data: &cfg,
 	}
 
-	db, err := sql.Open("postgres", cfg.DB_url)
+	db, err := sql.Open("postgres", cfg.Db_url)
 	if err != nil {
 		fmt.Println("Problem to connect with database")
 		os.Exit(1)
 	}
-	cfg.Db = database.New(db) //create a new query
+	state.Db = database.New(db) //create a new query
 
 	cmds := &commands.Commands{
 		CommandMap: make(map[string]func(*commands.State, commands.Command) error),
 	}
 
 	cmds.Register("login", commands.HandlerLogin)
+	cmds.Register("register", commands.HandlerRegister)
 
 	if len(os.Args) < 2 {
 		fmt.Println("usage: blog-aggregator <command> [args]")
@@ -39,7 +41,7 @@ func main() {
 		Args: os.Args[2:],
 	}
 
-	err := cmds.Run(state, cmd)
+	err = cmds.Run(state, cmd)
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)

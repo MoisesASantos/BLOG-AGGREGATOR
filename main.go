@@ -31,6 +31,7 @@ func main() {
 	cmds.Register("login", commands.HandlerLogin)
 	cmds.Register("register", commands.HandlerRegister)
 	cmds.Register("reset", commands.HandlerReset)
+	cmds.Register("users", commands.ListUsers)
 
 	if len(os.Args) < 2 {
 		fmt.Println("usage: blog-aggregator <command> [args]")

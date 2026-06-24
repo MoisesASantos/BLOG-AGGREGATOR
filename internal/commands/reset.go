@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"context"
 	"os"
-	//"github.com/MoisesASantos/BLOG-AGGREGATOR/internal/database"
 )
 
 func HandlerReset(s *State, cmd Command) error {

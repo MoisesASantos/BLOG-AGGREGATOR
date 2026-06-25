@@ -34,6 +34,7 @@ func main() {
 	cmds.Register("users", commands.ListUsers)
 	cmds.Register("agg", commands.HandlerAgg)
 	cmds.Register("addfeed", commands.HandlerAddFeed)
+	cmds.Register("feeds", commands.HandlerFeeds)
 
 	if len(os.Args) < 2 {
 		fmt.Println("usage: blog-aggregator <command> [args]")

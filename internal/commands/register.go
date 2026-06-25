@@ -31,8 +31,6 @@ func HandlerRegister(s *State, cmd Command) error {
 	userParam.UpdatedAt = time.Now().UTC()
 
 	userResult, err := s.Db.CreateUser(ctx ,userParam)
-	if err == nil {
-		s.Data.SetUser(userResult.Name)
-	}
+	s.Data.SetUser(userResult.Name)
 	return err
 }

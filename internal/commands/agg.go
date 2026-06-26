@@ -4,7 +4,11 @@ import (
 	"fmt"
 	"context"
 	"time"
+	"strings"
+	"database/sql"
+	"github.com/google/uuid"
 	"github.com/MoisesASantos/BLOG-AGGREGATOR/internal/rss"
+	"github.com/MoisesASantos/BLOG-AGGREGATOR/internal/database"
 )
 
 func scrapeFeeds(s *State) error {
@@ -24,12 +28,37 @@ func scrapeFeeds(s *State) error {
 	if err != nil {
 		return fmt.Errorf("fetch feed: %w", err)
 	}
-	fmt.Println("ITEMS:", len(data.Channel.Item))
-	
-	for _, item := range data.Channel.Item {
-		fmt.Println(item.Title)
-	}
 
+	for _, item := range data.Channel.Item {
+
+		publishedAt := sql.NullTime{}
+
+		if t, err := time.Parse(time.RFC1123Z, item.PubDate); err == nil {
+				publishedAt = sql.NullTime{
+				Time:  t,
+				Valid: true,
+			}
+		}
+
+		err := s.Db.CreatePost(ctx, database.CreatePostParams{
+			ID:          uuid.New(),
+			CreatedAt:   time.Now().UTC(),
+			UpdatedAt:   time.Now().UTC(),
+			Title:       item.Title,
+			Url:         item.Link,
+			Description: item.Description,
+			PublishedAt: publishedAt,
+			FeedID:      feed.ID,
+		})
+
+		if err != nil {
+			// IGNORAR duplicados
+			if strings.Contains(err.Error(), "duplicate") {
+				continue
+			}
+			fmt.Println("error inserting post:", err)
+		}	
+	}
 	return nil
 }
 
@@ -42,7 +71,8 @@ func HandlerAgg(s *State, cmd Command) error {
 	}
 
 	ticker := time.NewTicker(timeBetweenRequests)
-	
+	defer ticker.Stop()
+
 	for ; ; <-ticker.C {
 		scrapeFeeds(s)
 	}

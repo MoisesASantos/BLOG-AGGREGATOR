@@ -34,6 +34,7 @@ func main() {
 	cmds.Register("users", commands.ListUsers)
 	cmds.Register("agg", commands.HandlerAgg)
 	cmds.Register("feeds", commands.HandlerFeeds)
+	cmds.Register("browse", commands.HandlerBrowse)
 	cmds.Register("addfeed", commands.MiddlewareLoggedIn(commands.HandlerAddFeed))
 	cmds.Register("follow", commands.MiddlewareLoggedIn(commands.HandlerFollow))
 	cmds.Register("following", commands.MiddlewareLoggedIn(commands.HandlerFollowing))

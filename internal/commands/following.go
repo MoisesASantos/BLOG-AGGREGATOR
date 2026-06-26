@@ -4,16 +4,12 @@ import (
 	"fmt"
 	"errors"
 	"context"
+	"github.com/MoisesASantos/BLOG-AGGREGATOR/internal/database"
 )
 
-func HandlerFollowing(s *State, cmd Command) error {
+func HandlerFollowing(s *State, cmd Command, user database.GetUserRow) error {
 
 	ctx := context.Background()
-	user, err := s.Db.GetUser(ctx, s.Data.Current_user_name)
-	if err != nil {
-		return errors.New("Error trying to get user on HandlerFollowing function")
-	}
-
 	resultFollows, err :=  s.Db.GetFeedFollowsForUser(ctx, user.ID)
 	if err != nil {
 		return errors.New("Error trying to get feeds on HandlerFollowing function")

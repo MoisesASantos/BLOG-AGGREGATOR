@@ -4,12 +4,11 @@ import (
 	"fmt"
 	"context"
 	"time"
-	"errors"
 	"github.com/google/uuid"
 	"github.com/MoisesASantos/BLOG-AGGREGATOR/internal/database"
 )
 
-func HandlerFollow(s *State, cmd Command) error {
+func HandlerFollow(s *State, cmd Command, user database.GetUserRow) error {
 
 	ctx := context.Background()
 
@@ -19,11 +18,6 @@ func HandlerFollow(s *State, cmd Command) error {
 		return err
 	}
 	
-	user, err := s.Db.GetUser(ctx, s.Data.Current_user_name)
-	if err != nil {
-		return errors.New("Error trying to get user on HandlerFollowing function")
-	}
-
 	now := time.Now().UTC()
 	params := database.CreateFeedFollowParams{
 		ID:        uuid.New(),

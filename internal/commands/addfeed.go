@@ -9,7 +9,7 @@ import (
 	"github.com/MoisesASantos/BLOG-AGGREGATOR/internal/database"
 )
 
-func HandlerAddFeed(s *State, cmd Command) error {
+func HandlerAddFeed(s *State, cmd Command, currentUser database.GetUserRow) error {
 
 	if len(cmd.Args) != 2 {
 		fmt.Println("Error on args, Usage: Command nameFedd urlFeed")
@@ -19,14 +19,7 @@ func HandlerAddFeed(s *State, cmd Command) error {
 	urlFeed := cmd.Args[1]
 
 	ctx := context.Background()
-	currentUser, err := s.Db.GetUser(ctx, s.Data.Current_user_name)
-	if err != nil {
-		fmt.Println("Error to get a user")
-		return err
-	}
-
 	now := time.Now().UTC()
-
 	params := database.CreateFeedParams{
 		ID:        uuid.New(),
 		CreatedAt: now,

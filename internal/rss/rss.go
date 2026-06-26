@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"time"
 	"html"
+	//"bytes"
 )
 
 type RSSFeed struct {
@@ -36,28 +37,31 @@ func FetchFeed(ctx context.Context, feedURL string) (*RSSFeed, error) {
 
 	req, err := http.NewRequestWithContext(ctx, "GET", feedURL, nil)
 	if err != nil {
-		fmt.Println("Error to make a request")
-		return nil, errors.New("Error to make a request")
+    	return &RSSFeed{}, fmt.Errorf("Error to make a request: %w", err)
 	}
 	req.Header.Set("User-Agent", "gator")
 
 	res, err := client.Do(req)
 	if err != nil {
-		fmt.Println("Error to make a request")
-		return &RSSFeed{}, errors.New("Error to make a request")
+		fmt.Println("Pau dos paus")
+    	return &RSSFeed{}, fmt.Errorf("Error to make a request: %w", err)
 	}
 	defer res.Body.Close()
+	fmt.Println("Status:", res.Status)
+
 
 	body, err := io.ReadAll(res.Body)
 	if err != nil {
 		fmt.Println("Error to try read the body response")
 		return &RSSFeed{}, errors.New("Error to try read the body response")
 	}
-
+	
+	/*fmt.Println(string(body[:300]))
+	decoder := xml.NewDecoder(bytes.NewReader(body))
+	decoder.Strict = false*/
 	err = xml.Unmarshal(body, &data)
 	if err != nil {
-		fmt.Println("Error to try unmarshal the xml content")
-		return &RSSFeed{}, errors.New("Error to try unmarshal the xml content")
+    	return &RSSFeed{}, fmt.Errorf("xml unmarshal failed: %w", err)
 	}
 
 	data.Channel.Title = html.UnescapeString(data.Channel.Title)

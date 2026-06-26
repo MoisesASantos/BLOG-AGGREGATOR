@@ -37,17 +37,17 @@ func main() {
 	cmds.Register("addfeed", commands.MiddlewareLoggedIn(commands.HandlerAddFeed))
 	cmds.Register("follow", commands.MiddlewareLoggedIn(commands.HandlerFollow))
 	cmds.Register("following", commands.MiddlewareLoggedIn(commands.HandlerFollowing))
+	cmds.Register("unfollow", commands.MiddlewareLoggedIn(commands.HandlerUnfollow))
 
 	if len(os.Args) < 2 {
 		fmt.Println("usage: blog-aggregator <command> [args]")
 		os.Exit(1)
 	}
-
+	
 	cmd := commands.Command{
 		Name: os.Args[1],
 		Args: os.Args[2:],
 	}
-
 	err = cmds.Run(state, cmd)
 	if err != nil {
 		fmt.Println(err)

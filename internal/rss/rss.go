@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"time"
 	"html"
+	"strings"
 	//"bytes"
 )
 
@@ -50,15 +51,17 @@ func FetchFeed(ctx context.Context, feedURL string) (*RSSFeed, error) {
 	fmt.Println("Status:", res.Status)
 
 
+	contentType := res.Header.Get("Content-Type")
+	if !strings.Contains(contentType, "xml") && !strings.Contains(contentType, "rss") {
+		return nil, fmt.Errorf("not a valid rss feed: %s", contentType)
+	}
+
 	body, err := io.ReadAll(res.Body)
 	if err != nil {
 		fmt.Println("Error to try read the body response")
 		return &RSSFeed{}, errors.New("Error to try read the body response")
 	}
 	
-	/*fmt.Println(string(body[:300]))
-	decoder := xml.NewDecoder(bytes.NewReader(body))
-	decoder.Strict = false*/
 	err = xml.Unmarshal(body, &data)
 	if err != nil {
     	return &RSSFeed{}, fmt.Errorf("xml unmarshal failed: %w", err)
